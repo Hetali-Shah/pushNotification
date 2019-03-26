@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">pushnotification</string>
+    <string name="app_name">Hetali Shah</string>
+    <string name="default_notification_channel_id" translation="false">fcm_default_channel</string>
 </resources>

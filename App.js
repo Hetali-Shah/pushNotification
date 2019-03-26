@@ -11,7 +11,6 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    console.log("djhfjhdjfhjdhfjh")
     this.checkPermission();
     this.createNotificationListeners(); //add this line
   }
@@ -47,6 +46,31 @@ export default class App extends Component {
       const { title, body } = notificationOpen.notification;
       this.showAlert(title, body);
     }
+    // Build your notification
+    const notification = new firebase.notifications.Notification()
+      .setTitle('Android Notification Actions')
+      .setBody('Action Body')
+      .setNotificationId('notification-action')
+      .setSound('default')
+      .android.setChannelId('notification-action')
+      .android.setPriority(firebase.notifications.Android.Priority.Max);
+// Build an action
+    const action = new firebase.notifications.Android.Action('test_action', 'ic_launcher', 'My Test Action');
+
+// Build a remote input
+    const remoteInput = new firebase.notifications.Android.RemoteInput('inputText')
+      .setLabel('Message');
+
+// Add the remote input to the action
+    action.addRemoteInput(remoteInput);
+
+// Add the action to the notification
+    notification.android.addAction(action);
+
+    console.log(action, "0000000000000", notification)
+
+// Display the notification
+    firebase.notifications().displayNotification(notification);
     /*
     * Triggered for data only payload in foreground
     * */
@@ -79,19 +103,15 @@ export default class App extends Component {
 
   //3
   async getToken() {
-    let fcmToken;
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
     if (!fcmToken) {
       fcmToken = await firebase.messaging().getToken();
       if (fcmToken) {
         // user has a device token
         await AsyncStorage.setItem('fcmToken', fcmToken);
-        this.setState({
-          fcmToken
-        })
-        console.log("tocken", fcmToken)
-
       }
     }
+    console.log("fcmToken", fcmToken)
   }
 
   //2
